@@ -1,7 +1,7 @@
 '''
 File: tweet_processor.py
-Author: <insert authors here>
-Date: <insert date here>
+Author: Tyler Grimes
+Date: 4/6/25
 
 Python module to handle the processing of tweets. Generally, we use either
 process_tweet or process_tweets.
@@ -27,11 +27,16 @@ def load_tweets(filename: str) -> list[str]:
     filename -- the name of the json file to read, this assumes that
     each line of the file is a complete json object that's a tweet
     '''
-    tweets = []
     # read the file line by line and use json.loads to read it in
     # note that the json object will have a .text field which is the 
     # actual content of the tweet--and what we want to return 
-    
+
+    tweets = []
+    with open(filename,'r') as f:
+        for line in f:
+            data = json.loads(line)
+            tweet = data["text"]
+            tweets.append(tweet)
 
     # now return the tweets as a list
     return tweets
@@ -52,11 +57,15 @@ def cleanup_tweet(tweet : str) -> str:
     Return:
       This function doesn't return anything but modifies the tweets in place.
     '''
-    cleaned_tweet = 'this should be a cleaned tweet, not this text'
     # 1) get rid of retweets using a regular expression--hint: use re.sub
     # 2) next get rid of http://<domain name> and https://<domain name>, for
     #   example, the tweet "Go to https://www.du.edu" would return just "Go to "
     # 3) and finally, remove all hashtags
+
+    no_rt = re.sub(r'^RT',"",tweet)
+    no_url = re.sub(r'(https?:\/\/)+([\w\.\d]+)([\/:?=&#]{1}[\d\w\.-]+)*[\/\?]?',"",no_rt)
+    no_hashtags = re.sub(r'#*',"",no_url)
+    cleaned_tweet = no_hashtags
 
     return cleaned_tweet
 
@@ -216,7 +225,9 @@ def test_tweet_processing():
 
 
 def main():
-    test_tweet_processing()
+    #test_tweet_processing()
+    #load_tweets("negative_tweets.json")
+    print(cleanup_tweet("RThello! #very cool https://hi http://wowthisisa WEBSITE"))
 
 if __name__ == '__main__':
     main()
