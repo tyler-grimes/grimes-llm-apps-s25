@@ -80,10 +80,10 @@ def tokenize_tweet(tweet : str, tokenizer : TweetTokenizer) -> list[str]:
     Returns:
     A list of tokens, where each element is a string
     '''
-    tokenizer = TweetTokenizer()
     # return the tweet with the tokenized version
     # hint: this is like 1 line of code using the tokenizer
-    return None
+    return(tokenizer.tokenize(tweet))
+
 
 # here we remove the stopwords and punctuation
 def remove_stopwords_and_punctuation(tweet_toks : list[str], 
@@ -98,9 +98,15 @@ def remove_stopwords_and_punctuation(tweet_toks : list[str],
       stopwords -- a list of stopwords
       punctuation -- a list of punctuation
     '''
+    for tweet in tweet_toks:
+        if ((tweet in stopwords) or (tweet in punctuation)):
+            tweet_toks.remove(tweet)
+    return tweet_toks
+
+        
     newtweet_toks = []
     # walk through the tokens in the tweet and remove any that are
-    # stopwords or punctuation from thie list of tokens
+    # stopwords or punctuation from the list of tokens
   
     # return the new list of tokens
     return newtweet_toks
@@ -125,7 +131,12 @@ def stem_tweet(tweet_toks : list[str], stemmer : PorterStemmer) -> list[str]:
 # read and return a list of stopwords
 def parse_stopwords(filename : str) -> list[str]:
     # read our stopwords from a file and return them as a list of strings
-    return []
+    stop_words = []
+    with open(filename,'r') as f:
+        for word in f:
+            stop_words.append(word)
+
+    return stop_words
 
 # parse and load the tweets
 def process_tweets(pos_name : str, neg_name : str, stopwords_name : str) -> tuple[(list[str], list[str], list[str], list[str], list[str])] :
@@ -228,7 +239,15 @@ def test_tweet_processing():
 def main():
     #test_tweet_processing()
     #load_tweets("negative_tweets.json")
-    print(cleanup_tweet("RThello! #very cool https://hi http://wowthisisa WEBSITE"))
+    print(cleanup_tweet(""))
+    tweet = "RThello! #very cool https://hi http://wowthisisa WEBSITE."
+    tokenizer = TweetTokenizer(preserve_case = False, 
+                               strip_handles = True,
+                               reduce_len=True)
+    tweet = cleanup_tweet(tweet)
+    tweet = tokenize_tweet(tweet,tokenizer)
+    stopwords = parse_stopwords('english_stopwords.txt')
+    print(remove_stopwords_and_punctuation(tweet,stopwords,['.','?','!']))
 
 if __name__ == '__main__':
     main()
