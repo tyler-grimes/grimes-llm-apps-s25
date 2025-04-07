@@ -80,6 +80,7 @@ def tokenize_tweet(tweet : str, tokenizer : TweetTokenizer) -> list[str]:
     Returns:
     A list of tokens, where each element is a string
     '''
+    tokenizer = TweetTokenizer()
     # return the tweet with the tokenized version
     # hint: this is like 1 line of code using the tokenizer
     return None
